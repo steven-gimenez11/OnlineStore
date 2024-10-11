@@ -3,15 +3,20 @@
 {% block content %} 
 
     <div class="max-w-4xl mx-auto px-8 py-24">
-        <h1>New Project</h1>
 
-        {% for product in products %}
-            <div>
-                <img src="{{ product.image.url }}" alt="{{ product.title }}">
-                {{ product.title }}
-            </div>
+        <h1>Products</h1>
+
+        <div class="flex gap-10">
+
+            {% for product in products %}
+
+            {% include 'a_products/product.html' %}
 
         {% endfor %}
+
+        </div>
+
+
 
     </div>
 
