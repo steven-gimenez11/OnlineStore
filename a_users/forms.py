@@ -11,8 +11,8 @@ class ProfileForm(ModelForm):
             'image': forms.FileInput(),
             'first_name' : forms.TextInput(attrs={'placeholder': 'Ingresa tu nombre'}),
             'last_name' : forms.TextInput(attrs={'placeholder': 'Ingresa tu apellido'}),
-            'phone' : forms.Textarea(attrs={'rows':3, 'placeholder': 'tu numero'}),
-            'address' : forms.TextInput(attrs={'placeholder': 'tu direccion'}),
+            'phone' : forms.Textarea(attrs={'rows':3, 'placeholder': 'Tu numero'}),
+            'address' : forms.TextInput(attrs={'placeholder': 'Tu direccion'}),
         }
         
         
