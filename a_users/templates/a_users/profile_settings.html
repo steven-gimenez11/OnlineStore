@@ -1,58 +1,46 @@
-{% extends 'layouts/box.html' %}
+{% extends 'layouts/box.html' %}  {# Extiende la plantilla base 'box.html' #}
 
-{% block content %}
+{% block content %}  {# Bloque de contenido principal #}
 
-<h1 class="mb-8">Account Settings</h1>
+<h1 class="mb-8">Configuracion de la cuenta</h1>  {# Encabezado para la configuración de la cuenta #}
 
-<table class="w-full text-sm text-left text-gray-500">
+<table class="w-full text-sm text-left text-gray-500">  {# Tabla con estilo para mostrar información de la cuenta #}
     <tbody>
         <tr>
-            <th scope="row" class="pt-4 pb-1 text-base font-bold text-gray-900">
-                Email address
-            </th>
+            <th scope="row" class="pt-4 pb-1 text-base font-bold text-gray-900">Correo electronico</th>  {# Encabezado de la columna de correo electrónico #}
             <td id="email-address" class="pt-4 pb-1 pl-4">
-                {% if user.email %}{{ user.email }}{% else %}No Email{% endif %}
+                {% if user.email %}{{ user.email }}{% else %}No Correo{% endif %}  {# Muestra el correo si existe o "No Correo" si no #}
             </td>
             <td class="pt-4 pb-1 pl-4">
                 <a id="email-edit" class="cursor-pointer font-medium text-blue-600 hover:underline"
                     hx-get="{% url 'profile-emailchange' %}"
                     hx-target="#email-address"
-                    hx-swap="innerHTML" >
-                    Edit
+                    hx-swap="innerHTML">
+                    Editar  {# Enlace para editar el correo #}
                 </a>
             </td>
         </tr>
         <tr class="border-b">
-            <th scope="row" class="pb-4 font-medium text-gray-900">  
-            </th>
+            <th scope="row" class="pb-4 font-medium text-gray-900"></th>
             <td class="pb-4 pl-4">
                 {% if user.emailaddress_set.first.verified %}
-                <span class="text-green-500">Verified</span>{% else %}
-                <span class="text-amber-500">Not verified</span>
-                {% endif %}
+                <span class="text-green-500">Verificado</span>{% else %}
+                <span class="text-amber-500">No verificado</span>{% endif %}  {# Indica si el correo está verificado o no #}
             </td>
             <td class="pb-4 pl-4">
                 <a href="{% url 'profile-emailverify' %}" class="font-medium text-blue-600 hover:underline">
-                    {% if not user.emailaddress_set.first.verified %}Verify{% endif %}
+                    {% if not user.emailaddress_set.first.verified %}Verificado{% endif %}  {# Enlace para verificar el correo #}
                 </a>
             </td>
         </tr>
-
         <tr class="border-b">
-            <th scope="row" class="py-4 text-base font-bold text-gray-900">
-                Delete Account
-            </th>
+            <th scope="row" class="py-4 text-base font-bold text-gray-900">Eliminar Cuenta</th>  {# Encabezado para la opción de eliminar la cuenta #}
+            <td class="py-4 pl-4">Una vez eliminada, la cuenta desaparecerá por siempre.</td>
             <td class="py-4 pl-4">
-                Once deleted, account is gone. Forever.
-            </td>
-            <td class="py-4 pl-4">
-                <a href="{% url 'profile-delete' %}" class="font-medium text-red-600 hover:underline">
-                    Delete
-                </a>
+                <a href="{% url 'profile-delete' %}" class="font-medium text-red-600 hover:underline">Eliminar</a>  {# Enlace para eliminar la cuenta #}
             </td>
         </tr>
     </tbody>
 </table>
-
 
 {% endblock %}

@@ -1,25 +1,15 @@
-{% extends 'layouts/blank.html' %}
+{% extends 'layouts/blank.html' %}  {# Extiende la plantilla 'blank.html' #}
 
-{% block content %} 
+{% block content %}  {# Bloque de contenido principal #}
 
-    <div class="max-w-4xl mx-auto px-8 py-24  ">
+<div class="max-w-4xl mx-auto px-8 py-24">  {# Contenedor con ancho máximo y márgenes automáticos para centrar el contenido #}
+    <h1 class="text-center">Productos</h1>  {# Encabezado para la lista de productos centrado #}
 
-        <h1 class= "text-center">
-        Productos
-        </h1>
-
-        <div class="flex gap-10 place-content-center ">
-
-            {% for product in products %}
-
-            {% include 'a_products/product.html' %}
-
+    <div class="flex gap-10 place-content-center">  {# Contenedor flexible con separación entre elementos #}
+        {% for product in products %}  {# Itera sobre la lista de productos #}
+            {% include 'a_products/product.html' %}  {# Incluye una plantilla para mostrar cada producto #}
         {% endfor %}
-
-        </div>
-
-
-
     </div>
+</div>
 
 {% endblock %}

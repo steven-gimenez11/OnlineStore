@@ -1,0 +1,21 @@
+{% extends 'layouts/box.html' %}  {# esta plantilla heredará todo el contenido y el diseño que esté en box.html #}
+
+{% block title %}Crear Producto | {% endblock %}  {# Define el título de la página #}
+
+{% block content %}  {# Inicio del bloque de contenido #}
+
+<h1>Crear Producto</h1>  {# Encabezado principal de la página #}
+
+<div class="card !p-8">  {# Contenedor con estilo de tarjeta y padding #}
+
+    <form method='POST' enctype="multipart/form-data">  {# Formulario que usa el método POST, acepta archivos #}
+        {% csrf_token %}  {# Token de seguridad CSRF #}
+        {{form.as_p}}  {# Muestra los campos del formulario como párrafos #}
+        <button class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-5 px-4 rounded">Enviar</button>  
+        {# Botón para enviar el formulario con estilo #}
+        <a class="bg-gray-900 hover:bg-gray-700 text-white font-bold py-5 px-4 rounded" href="{% url 'home' %}">Cancelar</a>  
+        {# Enlace para cancelar y volver a la página de inicio #}
+    </form>  
+    
+</div>  {# Cierre del contenedor de la tarjeta #}
+{% endblock %}  {# Fin del bloque de contenido #}

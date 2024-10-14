@@ -1,49 +1,24 @@
-<div class="flex items-center bg-white">
-    <img class="w-60" src="{{ product.image.url }}" alt="{{ product.title }}">
-    <div class="px-6 py-8">
-        <div class="font-bold text-gray-700 text-3xl mb-7">{{ product.title }}</div>
-        <span class="inline-block py-1 text-xl font-semibold text-gray-700 mr-2 mb-3">
-            {{ product.price }} $
-        </span>
-        <p>{{ product.description }}</p>
-        {% comment %} {% for tag in product.categories.all %}
-        <a class="font-bold">{{ category }}</a> {% endcomment %}
-        <p class="font-bold">Stock: {{ product.stock }}</p>
-        {% comment %} {% endfor %} {% endcomment %}
-    </div>
-        {% comment %} <div class="flex gap-2 justify-center mt-6 pb-32 mx-6">
-        <button value="{{ product.id }}" id="add-cart" class="{% if user.is_superuser %} hidden {% endif %}bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-8 rounded">Add Cart</button>
-        {% if user.is_superuser %}
-        <a class="bg-red-600 p-3 rounded hover:bg-red-800 font-bold text-white" href="{% url 'product-delete' product.id %}">Delete</a>
-        <a class="bg-green-600 p-3 rounded hover:bg-green-800 font-bold text-white" href="{% url 'product-edit' product.id %}">Edit</a>
-        {% endif %}
-    </div> {% endcomment %}
+<div class="flex justify-center">
+    <img class="w-80" src="{{ product.image.url }}" alt="{{ product.title }}">
 </div>
 
-
-
-{% comment %} 
-<script>
-    $(document).on('click', '#add-cart', function(e) {
-        e.preventDefault()
-        $.ajax({
-            type: 'POST',
-            url: '{% url "cart-add" %}',
-            data: {
-                product_id: $('#add-cart').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                action: 'post'
-            },
-
-            success: function(json) {
-                console.log(json);
-                document.getElementById("cart_quantity").
-                    textContent = json.qty
-            },
-            
-            error: function(xhr,errmsg, err) {
-                
-            }
-        })
-    })
-</script> {% endcomment %}
+<div class="detail2 bg-white">
+    <div class="px-6 pt-8">
+        <div class="font-bold text-gray-700 text-3xl mb-7">{{ product.title }}</div>
+        <span class="inline-block py-1 text-xl font-semibold text-gray-700 mr-2 mb-2">
+            $ {{ product.price }}
+        </span>
+        <p>{{ product.description }}</p>
+        {% for category in product.category.all %}
+        <a class="font-bold">{{ category }}</a>
+        <p class="font-bold">Stock: {{ product.stock }}</p>
+        {% endfor %}
+    </div>
+    
+    <div class="flex gap-2 justify-center mt-6 pb-32 mx-6">
+        {% if user.is_superuser %}
+        <a class="bg-green-600 p-3 rounded hover:bg-green-800 font-bold text-white" href="{% url 'product-edit' product.id %}">Editar</a>
+        <a class="bg-red-600 p-3 rounded hover:bg-red-800 font-bold text-white" href="{% url 'product-delete' product.id %}">Eliminar</a>
+        {% endif %}
+    </div>
+</div>

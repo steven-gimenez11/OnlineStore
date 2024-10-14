@@ -2,11 +2,11 @@
 {% load i18n %}
 {% load allauth account %}
 {% block head_title %}
-    {% trans "Sign In" %}
+    {% trans "Iniciar Sesion" %}
 {% endblock head_title %}
 {% block content %}
     {% element h1 %}
-        {% trans "Sign In" %}
+        {% trans "Iniciar Sesion" %}
     {% endelement %}
     <p>
         Si aún no has creado una cuenta, por favor creala.
@@ -26,7 +26,7 @@
         {% endslot %}
         {% slot actions %}
             {% element button type="submit" tags="prominent,login" %}
-                {% trans "Sign In" %}
+                {% trans "Iniciar Sesion" %}
             {% endelement %}
         {% endslot %}
     {% endelement %}

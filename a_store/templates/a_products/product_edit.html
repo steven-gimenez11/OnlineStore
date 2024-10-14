@@ -1,0 +1,27 @@
+{% extends 'layouts/box.html' %}  {# Extiende la plantilla base 'box.html' #}
+
+{% block title %}{{ product.title }} | {% endblock %}  {# Usa el título del producto como el título de la página #}
+
+{% block content %}  {# Inicia el bloque de contenido principal #}
+
+<h1>Editar Producto</h1>  {# Encabezado de la página "Editar Producto" #}
+<div class="card p-4">  {# Contenedor con clase 'card' y padding #}
+
+    <div class="flex items-center mb-4">  {# Contenedor para alinear elementos horizontalmente con espacio inferior #}
+        <img class="w-20 h-20 object-cover rounded-xl mr-4" src="{{product.image.url}}">  {# Muestra la imagen del producto con estilos para tamaño, bordes redondeados y margen derecho #}
+        <h3 class="text-lg font-bold">{{ product.title }}</h3>  {# Muestra el título del producto en un encabezado más pequeño (h3) #}
+    </div>
+    
+    <div class="pb-2">  {# Contenedor con padding inferior para el formulario #}
+        <form method='POST'>  {# Inicia el formulario con método POST #}
+            {% csrf_token %}  {# Token CSRF para proteger el formulario #}
+            {{ form }}  {# Renderiza el formulario usando los campos pasados desde la vista Django #}
+            <div class="pt-4">  {# Contenedor con padding superior para los botones #}
+                <button class="p-4 bg-gray-800 hover:bg-gray-500">Enviar</button>  {# Botón de envío con estilos para tamaño, fondo oscuro y cambio de color al pasar el mouse #}
+                <a class="p-4 bg-gray-800 hover:bg-gray-500 rounded ml-1 text-white font-bold" href="{% url 'home' %}">Volver</a>  {# Enlace para volver a la página principal, con los mismos estilos que el botón y margen izquierdo #}
+            </div>
+        </form>  {# Cierra el formulario #}
+    </div>
+</div>  {# Cierra el contenedor 'card' #}
+
+{% endblock %}  {# Fin del bloque de contenido #}
