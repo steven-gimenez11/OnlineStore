@@ -33,3 +33,4 @@ class ProductEditForm(ModelForm):
             'stock': forms.NumberInput(attrs={'min': '0'}),
             'category': forms.CheckboxSelectMultiple(attrs={'class': 'flex p-5 justify-start gap-10 text-xl'}),
         }
+

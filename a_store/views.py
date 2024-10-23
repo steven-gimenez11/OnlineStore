@@ -39,11 +39,11 @@ def product_delete(request, pid):
 # Vista para crear un nuevo producto
 def product_create(request):
     if request.method == 'POST':  # Verifica si el método de la solicitud es POST (envío de formulario)
-        form = ProductForm(request.POST, request.FILES)  # Crea un formulario con los datos del nuevo producto
+        form = ProductCreateForm(request.POST, request.FILES)  # Crea un formulario con los datos del nuevo producto
         if form.is_valid():  # Verifica si el formulario es válido
             form.save()  # Guarda el nuevo producto en la base de datos
             return redirect('home')  # Redirige a la página principal
     else:
-        form = ProductForm()  # Si no es POST, crea un formulario vacío para el nuevo producto
+        form = ProductCreateForm()  # Si no es POST, crea un formulario vacío para el nuevo producto
 
     return render(request, 'a_products/product_create.html', {'form': form})  # Renderiza la plantilla del formulario pasando el formulario

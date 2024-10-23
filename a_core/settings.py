@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django_htmx',
     'a_store',
     'a_users',
-]
+    'a_ecart']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
