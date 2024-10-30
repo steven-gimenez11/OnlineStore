@@ -1,0 +1,115 @@
+{% extends 'layouts/g.html' %}
+
+{% block content %}
+
+{% load price_filters %}
+{% load static %}
+<div class="flex flex-col h-screen text-center justify-between rounded p-4 opacity-0" _="on load transition my opacity to 1 over 0.3 seconds">
+        <div>
+            <div class="py-4 border-b border-gray-200">
+                <h1 class="text-2xl font-bold">Tu carrito de compras</h1>
+            </div>
+            <div class="p-6">
+                {% if cart_products %}
+                <ul class="flex flex-col">
+                    {% for product in cart_products %}
+                    <li class="flex flex-col sm:flex-row items-center space-x-4 my-2">
+                        <img src="{{ product.image.url }}" alt="{{ item.product.title }}" class="w-40 object-cover rounded">
+                        <div class="flex-1">
+                            <h3 class="font-semibold">{{ product.title }}</h3>
+                            <p class="text-sm text-gray-600">${{ product.price|formato_precio }}</p>
+                        </div>
+    
+                        <div class="flex flex-col md:flex-row items-center gap-5 pb-7">
+                            Cantidad:
+                            <select id="select{{ product.id }}" class="block appearance-none w-auto bg-white border border-gray-300 text-gray-700 py-3 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                {% for key, value in quantities.items %}
+                                    {% if key == product.id|slugify %}
+                                        <option selected>{{ value }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <div class="flex gap-5">
+                                <button data-index="{{ product.id }}" class="p-3 update-cart text-sm">Actualizar</button>
+                                <button id="delete-product" data-index="{{ product.id }}" class="w-10 p-2 bg-red-600 hover:bg-red-800 text-sm"><img class="w-full" src="https://img.icons8.com/small/64/ffffff/delete-sign.png" alt="delete-product"></button>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-center text-gray-600">Tu carrito está vacio</p>
+                {% endif %}
+            </div>
+        </div>
+        {% if cart_products %}
+        <div class="border-t border-gray-200 pt-10 flex flex-col items-center gap-16">
+            <div class="text-lg font-semibold">Subtotal: ${{ totals|formato_precio }}</div>
+            <a href="{% url 'payment-checkout' %}" class="bg-blue-500 text-white p-4 px-8 rounded">Verificar Compra</a>
+        </div>
+        {% endif %}
+</div>
+
+<div class="absolute top-80" hx-trigger="load">
+    <img alt="Result loading..." class="htmx-indicator loader" width="150" src="{% static 'images/logo.png' %}"/>
+</div>
+
+<script>
+    
+    $(document).on('click', '.update-cart', function(e) {
+        e.preventDefault()
+        let productid = $(this).data('index');
+        
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-update" %}',
+            data: {
+                product_id: $(this).data('index'),
+                product_qty: $('#select' + productid + ' option:selected').text(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            
+            success: function(json) {
+                location.reload();
+            },
+            
+            error: function(xhr,errmsg, err) {
+                
+            }
+        })
+    })
+
+    // Delete product
+    $(document).on('click', '#delete-product', function(e){
+        e.preventDefault()
+        let productid = $(this).data('index');
+    
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-delete" %}',
+            data: {
+                product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+    
+            success: function(json) {
+                location.reload();
+            },
+            
+            error: function(xhr,errmsg, err) {
+                
+            }
+        })
+    })
+
+</script>
+
+{% endblock %}

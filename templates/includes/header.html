@@ -1,41 +1,55 @@
 {% load static %}
-<header class="flex items-center justify-between bg-gray-800 h-20 px-8 text-white sticky top-0 z-40">
-    <div>
-        <a class="flex items-center gap-2" href="/">
-            <img class="w-16 mr-1" src="{% static 'images/Loste.jpg' %}" alt="Logo"/>
-            <span class="text-lg font-bold">Loste</span>
-        </a>
+<header class="bg-gray-800 text-white sticky top-0 z-40 shadow-md">
+    <div class="flex items-center justify-between px-8 py-4">
+        <div>
+            <a class="flex items-center gap-2" href="/">
+                <img class="w-12 h-12" src="{% static 'images/Loste.jpg' %}" alt="Logo"/>
+                <span class="text-2xl font-semibold tracking-wide">Loste</span>
+            </a>
+        </div>
+        
+        <nav class="relative">
+            <ul class="flex items-center gap-8 text-lg font-medium">
+                <li><a href="{% url 'home' %}" class="hover:text-gray-300 transition">Inicio</a></li>
+
+                {% if request.user.is_authenticated %}
+
+                <li x-data="{ dropdownOpen: false }" class="relative">
+                    <div @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center gap-2 cursor-pointer">
+                        <img class="h-9 w-9 rounded-full object-cover" src="{{ request.user.profile.avatar }}" alt="Avatar" />
+                        <span>{{ request.user.profile.name }}</span>
+                        <img :class="dropdownOpen ? 'rotate-180 transform transition' : 'rotate-0'" class="w-4 ml-1" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png" alt="Dropdown" />
+                    </div>
+                    
+                    <div x-show="dropdownOpen" x-cloak class="absolute right-0 mt-2 w-48 bg-white text-gray-700 shadow-lg rounded-md overflow-hidden z-20"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 transform scale-95"
+                         x-transition:enter-end="opacity-100 transform scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform scale-100"
+                         x-transition:leave-end="opacity-0 transform scale-95">
+                        <ul class="py-1">
+                            <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">Mi Perfil</a></li>
+                            <li><a href="{% url 'product-create' %}" class="block px-4 py-2 hover:bg-gray-100">Crear Producto</a></li>
+                            <li><a href="{% url 'profile-edit' %}" class="block px-4 py-2 hover:bg-gray-100">Editar Perfil</a></li>
+                            <li><a href="{% url 'profile-settings' %}" class="block px-4 py-2 hover:bg-gray-100">Configuración</a></li>
+                            <li><a href="{% url 'account_logout' %}" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="relative">
+                    <a href="{% url 'cart-summary' %}" class="relative flex items-center">
+                        <img class="w-7" src="{% static 'images/cart.png' %}" alt="cart">
+                        <span id="cart_quantity" class="absolute -top-1 -right-2 bg-red-600 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">{{ cart|length }}</span>
+                    </a>
+                </li>
+                {% else %}
+
+                <li><a href="{% url 'account_login' %}" class="hover:text-gray-300 transition">Login</a></li>
+                <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}" class="hover:text-gray-300 transition">Signup</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
-    <nav class="block relative">
-        <ul class="navitems flex items-center justify-center h-full">
-            {% if request.user.is_authenticated %}
-            <li><a href="{% url 'home' %}">Inicio</a></li>
-            <li x-data="{ dropdownOpen: false }" class="relative">
-                <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
-                    <img class="h-8 w-8 rounded-full object-cover" src="{{ request.user.profile.avatar }}" alt="Avatar" />
-                    {{ request.user.profile.name }}
-                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png" alt="Dropdown" />
-                </a>
-                <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
-                x-transition:enter="duration-300 ease-out"
-                x-transition:enter-start="opacity-0 -translate-y-5 scale-90"
-                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                >
-                    <ul class="hoverlist [&>li>a]:justify-end">
-                        <li><a href="{% url 'profile' %}">Mi Perfil</a></li>
-                        
-                        <li><a href="{% url 'product-create' %}">Crear Producto</a></li>
-                        <li><a href="{% url 'profile-edit' %}">Editar Perfil</a></li>
-                        <li><a href="{% url 'profile-settings' %}">Configuración</a></li>
-                        <li><a href="{% url 'account_logout' %}">Cerrar Sesión</a></li>
-                    </ul>
-                </div>
-            </li>
-            
-            {% else %}
-            <li><a href="{% url 'account_login' %}">Login</a></li>
-            <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a></li>
-            {% endif %}
-        </ul>
-    </nav>
 </header>

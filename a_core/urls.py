@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('a_store.urls')),
+    path('cart/',  include('a_ecart.urls')),
     path('profile/', include('a_users.urls')),
     path('@<slug:username>/', profile_view, name="profile"),
 ]

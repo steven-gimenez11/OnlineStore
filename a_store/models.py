@@ -36,14 +36,3 @@ class Product(models.Model):
     def get_absolute_url(self):
         return f'/product/{self.id}'
 
-class Order(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-    address = models.CharField(max_length=100, default='', blank=True)
-    phone = models.CharField(max_length=20, default='', blank=True)
-    date = models.DateTimeField(auto_now_add=True)
-    status = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.product)
