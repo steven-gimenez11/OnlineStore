@@ -9,9 +9,10 @@ from django.http import JsonResponse
 
 def cart_summary(request):
     cart = Cart(request)
-    cart_products = cart.get_prods
-    quantities = cart.get_quants
+    cart_products = cart.get_prods()
+    quantities = cart.get_quants()
     totals = cart.cart_total()
+
 
     categories = Category.objects.all()
     
@@ -22,7 +23,7 @@ def cart_summary(request):
         'categories': categories
     }
     
-    return render(request, 'a_ecart/cart_summary.html', context) 
+    return render(request, 'cart_summary.html', context)
 
 def cart_add(request):
     cart = Cart(request)

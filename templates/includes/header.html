@@ -39,7 +39,7 @@
                 </li>
 
                 <li class="relative">
-                    <a href="{% url 'cart-summary' %}" class="relative flex items-center">
+                    <a href="{% url 'cart_summary' %}" class="relative flex items-center">
                         <img class="w-7" src="{% static 'images/cart.png' %}" alt="cart">
                         <span id="cart_quantity" class="absolute -top-1 -right-2 bg-red-600 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">{{ cart|length }}</span>
                     </a>

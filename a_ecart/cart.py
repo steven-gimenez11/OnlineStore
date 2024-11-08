@@ -1,17 +1,18 @@
 from a_store.models import Product
 from a_users.models import Profile
 
-class Cart():
+class Cart:
     
     def __init__(self, request):
         self.session = request.session
         self.request = request
-        cart = self.session.get('session_key')
+        cart = self.session.get('session_key', {})
         
         if 'session_key' not in request.session:
-            cart = self.session['session_key'] = {}
+            self.session['session_key'] = {}
         
         self.cart = cart
+
         
         
     def db_add(self, product, quantity):
