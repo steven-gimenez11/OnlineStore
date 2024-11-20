@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+ENVIRONMENT = 'development'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +45,10 @@ INSTALLED_APPS = [
     'django_htmx',
     'a_store',
     'a_users',
-    'a_ecart']
+    'a_ecart',
+    'a_payment',
+    'whitenoise.runserver_nostatic',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,6 +60,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 
 ]
 
@@ -68,7 +75,7 @@ ROOT_URLCONF = 'a_core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,11 +83,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
+                'a_ecart.context_processors.cart',
             ],
         },
     },
 ]
+
 
 
 
@@ -90,6 +98,8 @@ WSGI_APPLICATION = 'a_core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+
 
 DATABASES = {
     'default': {

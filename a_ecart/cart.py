@@ -16,7 +16,7 @@ class Cart:
         
         
     def db_add(self, product, quantity):
-        product_id = str(product.id)
+        product_id = product.id 
         product_qty = str(quantity)
         
         if product_id in self.cart:

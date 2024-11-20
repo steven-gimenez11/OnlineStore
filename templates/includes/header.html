@@ -11,6 +11,15 @@
         <nav class="relative">
             <ul class="flex items-center gap-8 text-lg font-medium">
                 <li><a href="{% url 'home' %}" class="hover:text-gray-300 transition">Inicio</a></li>
+                <li><a href="{% url 'product-create' %}" class="hover:text-gray-300 transition">Crear Producto</a></li>
+                <li class="relative">
+                    <a href="{% url 'cart_summary' %}" class="relative flex items-center">
+                        <img class="w-7" src="{% static 'images/cart.png' %}" alt="cart">
+                        <span id="cart_quantity" class="absolute -top-1 -right-2 bg-red-600 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">{{ cart|length }}</span>
+                    </a>
+                </li>
+                
+
 
                 {% if request.user.is_authenticated %}
 
@@ -30,19 +39,11 @@
                          x-transition:leave-end="opacity-0 transform scale-95">
                         <ul class="py-1">
                             <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">Mi Perfil</a></li>
-                            <li><a href="{% url 'product-create' %}" class="block px-4 py-2 hover:bg-gray-100">Crear Producto</a></li>
                             <li><a href="{% url 'profile-edit' %}" class="block px-4 py-2 hover:bg-gray-100">Editar Perfil</a></li>
                             <li><a href="{% url 'profile-settings' %}" class="block px-4 py-2 hover:bg-gray-100">Configuración</a></li>
                             <li><a href="{% url 'account_logout' %}" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Cerrar Sesión</a></li>
                         </ul>
                     </div>
-                </li>
-
-                <li class="relative">
-                    <a href="{% url 'cart_summary' %}" class="relative flex items-center">
-                        <img class="w-7" src="{% static 'images/cart.png' %}" alt="cart">
-                        <span id="cart_quantity" class="absolute -top-1 -right-2 bg-red-600 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">{{ cart|length }}</span>
-                    </a>
                 </li>
                 {% else %}
 

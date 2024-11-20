@@ -1,0 +1,74 @@
+{% extends 'layouts/g.html' %}
+
+{% block content %}
+
+{% load price_filters %}
+{% load static %}
+<div class="p-4 opacity-0" _="on load transition my opacity to 1 over 0.3 seconds">
+
+        <div class="md:px-6 py-4 text-center md:text-start">
+            <h1 class="text-2xl font-bold underline">Factura</h1>
+        </div>
+
+        <div class="flex flex-col text-center md:flex-row gap-20">
+            <div class="">
+                <ul class="flex flex-col">
+                    <h2 class="border-b p-4 mb-6">Orden</h2>
+                    {% for product in cart_products %}
+                    <li class="flex flex-col sm:flex-row items-center space-x-4">
+                        <img src="{{ product.image.url }}" alt="{{ item.product.title }}" class="w-40 object-cover rounded">
+                        <div class="flex-1">
+                            <h3 class="font-semibold">{{ product.title }}</h3>
+                            <p class="text-sm text-gray-600">${{ product.price|formato_precio }}</p>
+                        </div>
+                        <medium>Cantitad: 
+                            {% for key, value in quantities.items %}
+                                {% if key == product.id|slugify %}
+                                    {{ value }}
+                                {% endif %}
+                            {% endfor %}
+                        </medium>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <p class="text-lg font-semibold">Subtotal: ${{ totals|formato_precio }}</p>
+
+            </div> 
+
+            <div class="text-start">
+                <h2 class="border-b p-4 md:mb-6 text-center mb-6">Detalles de Envio</h2>
+                    <div class="flex flex-col justify-center max-w-3xl gap-4">
+                        <div class="flex flex-col flex-wrap gap-8 justify-center">
+                            <span><b>Nombre:</b> {{ form.shipping_full_name }}</span>
+                            <span><b>Correo:</b> {{ form.shipping_email }}</span>
+                            <span><b>Direccion:</b> {{ form.shipping_address }}</span>
+                            <span><b>Calle y número:</b> {{ form.shipping_street }}</span>
+                            <span><b>Codigo Postal:</b> {{ form.shipping_zipcode }}</span>
+                            <span><b>Ciudad:</b> {{ form.shipping_city }}</span>
+                            <span><b>País:</b> {{ form.shipping_country }}</span>
+                        </div>
+                        <a href="{% url 'payment-checkout' %}" class="hover:bg-blue-800 text-white bg-blue-600  p-4 rounded font-bold">Actualizar Direccion</a>
+                    </div>
+            </div>
+
+            <div>
+                {{ paypal_form.render }}
+            </div>
+
+            <div class="text-start">
+                <h2 class="border-b p-4 md:mb-6 text-center mb-6">Pagar con Tarjeta</h2>
+                <form method="POST" action="{% url 'process-order' %}">
+                    {% csrf_token %}
+                    {{ billing_form.as_p }}
+                <button class="p-4 inline text-white hover:bg-blue-400 bg-blue-500 rounded">Ir a Pagar</button>
+
+                </form>
+                
+            </div>
+
+        </div>
+
+
+</div>
+
+{% endblock %}
