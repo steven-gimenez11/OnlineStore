@@ -117,3 +117,5 @@ class Cart:
             carty = str(self.cart)
             carty = carty.replace("\'", "\"")
             current_user.update(old_cart=str(carty))
+
+            

@@ -14,7 +14,17 @@
         <p class="font-bold">Stock: {{ product.stock }}</p>
         {% endfor %}
     </div>
-    
+    <div class="flex items-center gap-5">
+        Cantidad:
+        <select id="qty-cart" class="block appearance-none  bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+        </select>
+    </div>
     <div class="flex gap-2 justify-center mt-6 pb-32 mx-6">
         {% if user.is_superuser %}
         <a class="bg-green-600 p-3 rounded hover:bg-green-800 font-bold text-white" href="{% url 'product-edit' product.id %}">Editar</a>
@@ -39,13 +49,16 @@
             url: '{% url "cart_add" %}',  // URL correcta
             data: {
                 product_id: productId,
-                product_qty: 1,  // Por defecto, 1 unidad
+                product_qty: $('#qty-cart option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',  // Token CSRF
                 action: 'post'
             },
-            success: function (response) {
-                alert('Producto agregado al carrito.');
+            success: function(json) {
+                document.getElementById("cart_quantity").
+                    textContent = json.qty
+                location.reload()
             },
+            
             error: function (xhr, errmsg, err) {
                 console.error('Error al agregar al carrito:', errmsg);
             }

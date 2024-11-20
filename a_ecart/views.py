@@ -57,9 +57,8 @@ def cart_delete(request):
             response = JsonResponse({'product': product_id})
             messages.warning(request, 'Producto eliminado del carrito')
             return response
-    except Exception as e:
-        messages.error(request, 'Error al eliminar producto: {}'.format(str(e)))
-        return JsonResponse({'error': 'Error al eliminar producto'})
+    except:
+        return messages.error(request, 'Error al eliminar producto')
 
 def cart_update(request):
     cart = Cart(request)
