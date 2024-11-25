@@ -50,24 +50,52 @@ def cart_add(request):
 
 def cart_delete(request):
     cart = Cart(request)
+
     try:
         if request.POST.get('action') == 'post':
             product_id = str(request.POST.get('product_id'))
             cart.delete(product=product_id)
-            response = JsonResponse({'product': product_id})
-            messages.warning(request, 'Producto eliminado del carrito')
+
+            # Obtener la cantidad total de productos después de eliminar uno
+            cart_quantity = cart.__len__()
+
+            # Obtener el total actualizado del carrito
+            cart_total = cart.cart_total()
+
+            response = JsonResponse({
+                'product': product_id,
+                'cart_quantity': cart_quantity,
+                'cart_total': cart_total
+            })
             return response
-    except:
-        return messages.error(request, 'Error al eliminar producto')
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
 
 def cart_update(request):
     cart = Cart(request)
-    
+
     if request.POST.get('action') == 'post':
         product_id = str(request.POST.get('product_id'))
         product_qty = int(request.POST.get('product_qty'))
 
-        cart.update(product=product_id, quantity=product_qty)
-        
-        response = JsonResponse({'qty': product_qty})
+        product = get_object_or_404(Product, id=product_id)
+        cart.update(product=product, quantity=product_qty)
+
+        # Calcular el precio total para este producto
+        total_price = product.price * product_qty
+
+        # También actualiza el total general del carrito
+        cart_total = cart.cart_total()
+
+        response = JsonResponse({
+            'qty': product_qty,
+            'total_price': total_price,
+            'cart_total': cart_total
+        })
         return response
+
+    return JsonResponse({'error': 'Método no permitido o acción inválida'}, status=405)
+

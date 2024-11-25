@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'a_store',
     'a_users',
     'a_ecart',
-    'a_payment',
     'whitenoise.runserver_nostatic',
 ]
 
@@ -103,14 +102,20 @@ WSGI_APPLICATION = 'a_core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'mssql',
         'NAME': 'OnlineStore',
-        'USER': 'postgres',
-        'PASSWORD': 'steven22',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+        'USER': 'adminsteven',
+        'PASSWORD': '22',
+        'HOST': '',
+        'PORT': '',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 18 for SQL Server',
+            'extra_params': 'encrypt=no',
 }
+
+        },
+    }
+
 
 
 # Password validation
@@ -136,6 +141,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'es'
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('es', 'Spanish'),
+]
+
 
 TIME_ZONE = 'UTC'
 

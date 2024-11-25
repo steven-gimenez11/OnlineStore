@@ -2,11 +2,16 @@ from django.db import models
 from a_users.models import Profile
 import uuid
 
-class Category(models.Model):  # Asegúrate de que este modelo esté definido primero
+class Category(models.Model):
     name = models.CharField(max_length=20)
     slug = models.SlugField(max_length=20, unique=True)
     order = models.IntegerField(null=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)  # Generar el slug automáticamente
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return self.name
 
@@ -18,8 +23,8 @@ class Category(models.Model):  # Asegúrate de que este modelo esté definido pr
 
 class Product(models.Model):
     title = models.CharField(max_length=30, null=True)
-    image = models.ImageField(upload_to='products/', null=True)
-    description = models.TextField(max_length=200, null=True)  # Ampliado a 200 caracteres
+    image = models.ImageField(upload_to='image/', null=True, blank=True)    
+    description = models.TextField(max_length=200, null=True) 
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(null=True)
     active = models.BooleanField(default=True)

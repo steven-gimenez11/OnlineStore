@@ -13,25 +13,20 @@ class Cart:
         
         self.cart = cart
 
-        
-        
     def db_add(self, product, quantity):
-        product_id = product.id 
+        product_id = product.id
         product_qty = str(quantity)
         
         if product_id in self.cart:
             pass
         else:
-            # self.cart[product_id] = {'price': str(product.price)}
             self.cart[product_id] = int(product_qty)
             
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            current_user = Profile.objects.filter(user__id=self.request.user.id)
-            carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
-            current_user.update(old_cart=str(carty))
+            # Eliminar la lógica de actualización de 'old_cart'
+            pass
     
     def add(self, product, quantity):
         product_id = str(product.id)
@@ -40,19 +35,15 @@ class Cart:
         if product_id in self.cart:
             pass
         else:
-            # self.cart[product_id] = {'price': str(product.price)}
             self.cart[product_id] = int(product_qty)
             
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            current_user = Profile.objects.filter(user__id=self.request.user.id)
-            carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
-            current_user.update(old_cart=str(carty))
+            # Eliminar la lógica de actualización de 'old_cart'
+            pass
         
     def cart_total(self):
-        
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         quantities = self.cart
@@ -61,48 +52,32 @@ class Cart:
             key = str(key)
             for product in products:
                 if product.id == key:
-                    total = total + (product.price * value)
+                    total += product.price * value
         return total
-        
         
     def __len__(self):
         return len(self.cart)
     
-    
     def get_prods(self):
-        
         product_ids = self.cart.keys()
-        
         products = Product.objects.filter(id__in=product_ids)
-    
         return products
     
-    
     def get_quants(self):
-        quantities = self.cart
-        return quantities
-    
+        return self.cart
     
     def update(self, product, quantity):
         product_id = str(product)
         product_qty = int(quantity)
         
-        ourcart = self.cart
-        
-        ourcart[product_id] = product_qty
-        
+        self.cart[product_id] = product_qty
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            current_user = Profile.objects.filter(user__id=self.request.user.id)
-            carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
-            current_user.update(old_cart=str(carty))
+            # Eliminar la lógica de actualización de 'old_cart'
+            pass
         
-        thing = self.cart
-        return thing
-    
-    
+        return self.cart
     
     def delete(self, product):
         product_id = str(product)
@@ -113,9 +88,5 @@ class Cart:
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            current_user = Profile.objects.filter(user__id=self.request.user.id)
-            carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
-            current_user.update(old_cart=str(carty))
-
-            
+            # Eliminar la lógica de actualización de 'old_cart'
+            pass

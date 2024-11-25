@@ -2,11 +2,26 @@ from django.shortcuts import render, get_object_or_404, redirect  # Importa las 
 from .models import *  # Importa todos los modelos (en este caso, el modelo Product)
 from django.contrib.auth.decorators import user_passes_test  # Importa el decorador para verificar permisos de usuario
 from .forms import * 
+from django.contrib import messages
+
 
 # Vista principal que muestra todos los productos
 def home_view(request):
     products = Product.objects.all()  # Obtiene todos los productos de la base de datos
     return render(request, 'home.html', {'products': products})  # Renderiza la plantilla 'home.html' pasando la lista de productos
+
+def category_view(request, slug):
+    try:
+        category = Category.objects.get(slug=slug)
+        products = Product.objects.filter(category=category)
+        print(f"Categoría: {category.name}, Productos encontrados: {products.count()}")
+    except Category.DoesNotExist:
+        category = None
+        products = []
+        print(f"No se encontró la categoría con slug: {slug}")
+    
+    return render(request, 'a_products/category.html', {'products': products, 'category': category})
+
 
 # Vista que muestra los detalles de un producto específico
 def product_view(request, pid):
@@ -15,16 +30,16 @@ def product_view(request, pid):
 
 # Vista que permite editar un producto existente
 def product_edit(request, pid):
-    product = get_object_or_404(Product, id=pid)  # Obtiene el producto por su ID
-    if request.method == 'POST':  # Verifica si el método de la solicitud es POST (envío de formulario)
-        form = ProductEditForm(request.POST, request.FILES, instance=product)  # Usa ProductEditForm aquí
-        if form.is_valid():  # Verifica si el formulario es válido
-            form.save()  # Guarda los cambios del producto en la base de datos
-            return redirect('product-detail', pid=product.id)  # Redirige a la vista de detalles del producto editado
+    product = get_object_or_404(Product, id=pid)  # Obtén el producto por su ID
+    if request.method == 'POST':
+        form = ProductEditForm(request.POST, request.FILES, instance=product)  # Asegúrate de incluir request.FILES
+        if form.is_valid():
+            form.save()
+            return redirect('product-detail', pid=product.id)
     else:
-        form = ProductEditForm(instance=product)  # Si no es POST, crea el formulario precargado con los datos del producto
-    
-    return render(request, 'a_products/product_edit.html', {'form': form})  # Renderiza la plantilla del formulario pasando el formulario
+        form = ProductEditForm(instance=product)
+
+    return render(request, 'a_products/product_edit.html', {'form': form, 'product': product})
 
 # Función para verificar si un usuario es administrador
 def is_admin(user):
