@@ -1,5 +1,4 @@
 from a_store.models import Product
-from a_users.models import Profile
 
 class Cart:
     
@@ -17,11 +16,9 @@ class Cart:
         product_id = product.id
         product_qty = str(quantity)
         
-        if product_id in self.cart:
-            pass
-        else:
+        if product_id not in self.cart:
             self.cart[product_id] = int(product_qty)
-            
+        
         self.session.modified = True
         
         if self.request.user.is_authenticated:
@@ -32,23 +29,19 @@ class Cart:
         product_id = str(product.id)
         product_qty = str(quantity)
         
-        if product_id in self.cart:
-            pass
-        else:
+        if product_id not in self.cart:
             self.cart[product_id] = int(product_qty)
-            
+        
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            # Eliminar la lógica de actualización de 'old_cart'
             pass
         
     def cart_total(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        quantities = self.cart
         total = 0
-        for key, value in quantities.items():
+        for key, value in self.cart.items():
             key = str(key)
             for product in products:
                 if product.id == key:
@@ -58,25 +51,34 @@ class Cart:
     def __len__(self):
         return len(self.cart)
     
-    def get_prods(self):
+    def get_products(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         return products
     
-    def get_quants(self):
+    def get_quantities(self):
         return self.cart
     
+    def get_product_totals(self):
+        product_totals = {}
+        for product_id, quantity in self.cart.items():
+            product = Product.objects.get(id=product_id)
+            product_totals[product_id] = product.price * quantity
+        return product_totals
+
     def update(self, product, quantity):
-        product_id = str(product)
-        product_qty = int(quantity)
-        
-        self.cart[product_id] = product_qty
+        """Actualiza la cantidad de un producto en el carrito"""
+        product_id = str(product.id) 
+        product_qty = int(quantity) 
+
+        if product_id in self.cart:
+            self.cart[product_id] = product_qty 
+
         self.session.modified = True
-        
+
         if self.request.user.is_authenticated:
-            # Eliminar la lógica de actualización de 'old_cart'
             pass
-        
+
         return self.cart
     
     def delete(self, product):
@@ -88,5 +90,4 @@ class Cart:
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            # Eliminar la lógica de actualización de 'old_cart'
             pass

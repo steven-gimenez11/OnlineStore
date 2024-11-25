@@ -1,65 +1,56 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from a_ecart.cart import Cart
-from a_store.models import Category
+from a_store.models import Category, Product
 from django.contrib import messages
-from a_store.models import Product
 from django.http import JsonResponse
-
-# Create your views here.
 
 def cart_summary(request):
     cart = Cart(request)
-    cart_products = cart.get_prods()  # Productos en el carrito
-    quantities = cart.get_quants()  # Cantidades de cada producto
-    totals = cart.cart_total()  # Total del carrito
+    cart_products = cart.get_products()
+    quantities = cart.get_quantities()
+    product_totals = cart.get_product_totals() 
 
-    categories = Category.objects.all()
+    total = sum(product_totals.values())
 
     context = {
         'cart_products': cart_products,
         'quantities': quantities,
-        'totals': totals,
-        'categories': categories
+        'product_totals': product_totals,
+        'total': total,
     }
 
     return render(request, 'cart_summary.html', context)
 
-
 def cart_add(request):
     cart = Cart(request)
 
-    if request.POST.get('action') == 'post':  # Verificar que la acción sea válida
+    if request.method == 'POST' and request.POST.get('action') == 'post':
         try:
-            product_id = str(request.POST.get('product_id'))  # Obtener el ID del producto
-            product_qty = int(request.POST.get('product_qty'))  # Obtener la cantidad
-            product = get_object_or_404(Product, id=product_id)  # Obtener el producto
+            product_id = str(request.POST.get('product_id'))
+            product_qty = int(request.POST.get('product_qty'))
+            product = get_object_or_404(Product, id=product_id)
 
-            cart.add(product=product, quantity=product_qty)  # Agregar al carrito
-            cart_quantity = cart.__len__()  # Obtener cantidad total de productos en el carrito
+            cart.add(product=product, quantity=product_qty)
+            cart_quantity = cart.__len__()
 
             messages.success(request, 'Producto agregado al carrito')
-            return JsonResponse({'qty': cart_quantity})  # Respuesta JSON
+            return JsonResponse({'qty': cart_quantity})
 
-        except Exception as e:  # Manejo de errores
+        except Exception as e:
             messages.error(request, f'Error al agregar al carrito: {e}')
             return JsonResponse({'error': str(e)}, status=400)
 
-    # Si la acción no es válida o no es POST
     return JsonResponse({'error': 'Método no permitido o acción inválida'}, status=405)
-
 
 def cart_delete(request):
     cart = Cart(request)
 
-    try:
-        if request.POST.get('action') == 'post':
+    if request.method == 'POST' and request.POST.get('action') == 'post':
+        try:
             product_id = str(request.POST.get('product_id'))
             cart.delete(product=product_id)
 
-            # Obtener la cantidad total de productos después de eliminar uno
             cart_quantity = cart.__len__()
-
-            # Obtener el total actualizado del carrito
             cart_total = cart.cart_total()
 
             response = JsonResponse({
@@ -69,33 +60,41 @@ def cart_delete(request):
             })
             return response
 
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
-
+    return JsonResponse({'error': 'Método no permitido o acción inválida'}, status=405)
 
 def cart_update(request):
     cart = Cart(request)
 
-    if request.POST.get('action') == 'post':
-        product_id = str(request.POST.get('product_id'))
-        product_qty = int(request.POST.get('product_qty'))
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        product_qty = request.POST.get('product_qty')
 
-        product = get_object_or_404(Product, id=product_id)
-        cart.update(product=product, quantity=product_qty)
+        if not product_id or not product_qty:
+            return JsonResponse({'error': 'ID de producto o cantidad faltante'}, status=400)
 
-        # Calcular el precio total para este producto
-        total_price = product.price * product_qty
+        try:
+            product_qty = int(product_qty)
+        except ValueError:
+            return JsonResponse({'error': 'Cantidad inválida'}, status=400)
 
-        # También actualiza el total general del carrito
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return JsonResponse({'error': 'Producto no encontrado'}, status=400)
+
+        cart.update(product, product_qty)
+
+        product_total = cart.get_product_totals().get(str(product_id), 0)
         cart_total = cart.cart_total()
 
-        response = JsonResponse({
-            'qty': product_qty,
-            'total_price': total_price,
+        return JsonResponse({
+            'product_total': product_total,
             'cart_total': cart_total
         })
-        return response
 
-    return JsonResponse({'error': 'Método no permitido o acción inválida'}, status=405)
+    else:
+        return JsonResponse({'error': 'Método de solicitud no permitido'}, status=405)
 
