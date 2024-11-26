@@ -22,7 +22,6 @@ class Cart:
         self.session.modified = True
         
         if self.request.user.is_authenticated:
-            # Eliminar la lógica de actualización de 'old_cart'
             pass
     
     def add(self, product, quantity):

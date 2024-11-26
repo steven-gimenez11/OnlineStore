@@ -5,105 +5,105 @@
 {% load static %}
 {% load custom_filters %}
 
-<div class="flex flex-col h-screen text-center justify-between rounded p-4 opacity-0" _="on load transition my opacity to 1 over 0.3 seconds">
-    <div>
-        <div class="py-4 border-b border-gray-200">
-            <h1 class="text-2xl font-bold">Tu carrito de compras</h1>
-        </div>
-        <div class="p-6">
-            {% if cart_products %}
-            <ul class="flex flex-col">
-                {% for product in cart_products %}
-                <li class="flex flex-col sm:flex-row items-center space-x-4 my-2" id="product-{{ product.id }}">
-                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-40 object-cover rounded">
-                    <div class="flex-1">
-                        <h3 class="font-semibold">{{ product.title }}</h3>
-                        <p class="text-sm text-gray-600">{{ product.price|formato_precio }}</p>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row items-center gap-5 pb-7">
-                        Cantidad:
-                        <select id="select{{ product.id }}" class="block appearance-none w-auto bg-white border border-gray-300 text-gray-700 py-3 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                            {% for key, value in quantities.items %}
-                                {% if key == product.id|stringformat:"s" %}
-                                    <option selected>{{ value }}</option>
-                                {% endif %}
-                            {% endfor %}
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                        </select>
-                        <div class="flex gap-5">
-                            <button data-index="{{ product.id }}" class="p-3 update-cart text-sm">Actualizar</button>
-                            <button id="delete-product-{{ product.id }}" data-index="{{ product.id }}" class="w-10 p-2 bg-red-600 hover:bg-red-800 text-sm">
-                                <img class="w-full" src="https://img.icons8.com/small/64/ffffff/delete-sign.png" alt="delete-product">
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- total por producto -->
-                    <div class="text-sm font-semibold text-gray-600" id="product-{{ product.id }}-total">
-                        {% if product_totals|get_item:product.id %}
-                            Total: {{ product_totals|get_item:product.id|formato_precio }}
-                        {% else %}
-                            Total no disponible
-                        {% endif %}
-                    </div>                    
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p class="text-center text-gray-600">Tu carrito está vacío</p>
-            {% endif %}
-        </div>
+<div class="flex flex-col max-w-4xl w-full mx-auto rounded shadow-lg bg-white p-6">
+    <!-- Título -->
+    <div class="border-b pb-4">
+        <h1 class="text-2xl font-bold text-gray-800">Tu carrito de compras</h1>
     </div>
-</div>
 
-<div class="absolute top-80" hx-trigger="load">
-    <img alt="Result loading..." class="htmx-indicator loader" width="150" src="{% static 'images/logo.png' %}"/>
-</div>
+    <!-- Lista de productos -->
+    <div class="flex-1 overflow-y-auto my-6">
+        {% if cart_products %}
+        <ul class="space-y-4">
+            {% for product in cart_products %}
+            <li class="flex items-center space-x-4 border-b pb-4" id="product-{{ product.id }}">
+                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-24 h-24 object-cover rounded">
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-800">{{ product.title }}</h3>
+                    <p class="text-gray-600">{{ product.price|formato_precio }}</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="select{{ product.id }}" class="text-sm text-gray-600">Cantidad:</label>
+                    <select id="select{{ product.id }}" class="border rounded px-2 py-1">
+                        {% for key, value in quantities.items %}
+                            {% if key == product.id|stringformat:"s" %}
+                                <option selected>{{ value }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <div class="flex space-x-2">
+                    <button 
+                        data-index="{{ product.id }}" 
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded update-cart">
+                        Actualizar
+                    </button>
+                    <button 
+                        id="delete-product-{{ product.id }}" 
+                        data-index="{{ product.id }}" 
+                        class="bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-4 rounded">
+                        Eliminar
+                    </button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-center text-gray-600">Tu carrito está vacío</p>
+        {% endif %}
+    </div>
 
-<div class="flex justify-between items-center py-4">
-    <span class="font-semibold text-xl">Total del carrito:</span>
-    <span class="text-lg font-bold" id="cart-total">{{ total|formato_precio }}</span>
+    {% if cart_products %}
+    <div class="flex flex-col items-center border-t pt-4">
+        <div class="flex justify-between w-full text-lg font-semibold">
+            <span>Total del carrito:</span>
+            <span id="cart-total">{{ total|formato_precio }}</span>
+        </div>
+        <a href="{% url 'payment:payment' %}" class="mt-4">
+            <button class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded">
+                Proceder a pagar
+            </button>
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <script>
-$(document).on('click', '.update-cart', function(e) {
-    e.preventDefault();
-    let productid = $(this).data('index');
-    let quantity = $('#select' + productid + ' option:selected').val();
-    
-    $.ajax({
-        type: 'POST',
-        url: '{% url "cart_update" %}',
-        data: {
-            product_id: productid,
-            product_qty: quantity,
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            action: 'post'
-        },
-        success: function(response) {
-            // Actualiza los valores en el front-end
-            $('#product-' + productid + '-total').text(response.product_total); 
-            $('#cart-total').text(response.cart_total);  
-        },
-        error: function(xhr, errmsg, err) {
-            console.log('Error updating cart:', errmsg);
-        }
+    $(document).on('click', '.update-cart', function(e) {
+        e.preventDefault();
+        let productid = $(this).data('index');
+        let quantity = $('#select' + productid + ' option:selected').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart_update" %}',
+            data: {
+                product_id: productid,
+                product_qty: quantity,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(response) {
+                $('#product-' + productid + '-total').text(response.product_total);
+                $('#cart-total').text(response.cart_total);
+                window.location.reload();
+            },
+            error: function(xhr, errmsg, err) {
+                console.log('Error updating cart:', errmsg);
+            }
+        });
     });
-});
 
-
-    
     $(document).on('click', '[id^="delete-product-"]', function(e) {
         e.preventDefault();
         let productid = $(this).data('index');
-        
+
         $.ajax({
             type: 'POST',
             url: '{% url "cart_delete" %}',
@@ -115,7 +115,9 @@ $(document).on('click', '.update-cart', function(e) {
             success: function(response) {
                 $('#product-' + productid).remove();
                 $('#cart-total').text(response.cart_total);
-                window.location.reload(); 
+                if (!response.cart_total) {
+                    window.location.reload();
+                }
             },
             error: function(xhr, errmsg, err) {
                 console.log('Error deleting product:', errmsg);
@@ -123,5 +125,4 @@ $(document).on('click', '.update-cart', function(e) {
         });
     });
 </script>
-
 {% endblock %}

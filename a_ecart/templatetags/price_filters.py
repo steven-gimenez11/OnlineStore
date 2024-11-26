@@ -4,10 +4,10 @@ register = template.Library()
 
 @register.filter(name='formato_precio')
 def formato_precio(value):
-    """Formatea un valor numérico como un precio con dos decimales en formato europeo."""
+    """Format value as currency (e.g., $100.00)."""
     try:
-        return "{:,.2f}".format(value).replace(",", "X").replace(".", ",").replace("X", ".")
-    except (TypeError, ValueError):
+        return "${:,.2f}".format(value)
+    except (ValueError, TypeError):
         return value
 
 

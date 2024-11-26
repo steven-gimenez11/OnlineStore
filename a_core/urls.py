@@ -27,8 +27,11 @@ urlpatterns = [
     path('cart/',  include('a_ecart.urls')),
     path('category/', include('a_store.urls')),
     path('profile/', include('a_users.urls')),
+    path('payment/', include('a_payment.urls')),
     path('@<slug:username>/', profile_view, name="profile"),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    
