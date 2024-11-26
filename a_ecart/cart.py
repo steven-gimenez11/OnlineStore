@@ -1,16 +1,24 @@
-from a_store.models import Product
+from a_store.models import Product 
 
 class Cart:
     
     def __init__(self, request):
         self.session = request.session
         self.request = request
-        cart = self.session.get('session_key', {})
+        cart = self.session.get('cart', {})  
         
-        if 'session_key' not in request.session:
-            self.session['session_key'] = {}
+        if 'cart' not in self.session: 
+            self.session['cart'] = {} 
         
         self.cart = cart
+
+    def clear(self):
+        """Borra el carrito de la sesión"""
+        if 'cart' in self.session: 
+            del self.session["cart"]  
+            self.session.modified = True 
+        else:
+            print("El carrito ya estaba vacío o no existe.")
 
     def db_add(self, product, quantity):
         product_id = product.id
@@ -67,7 +75,7 @@ class Cart:
 
     def update(self, product, quantity):
         """Actualiza la cantidad de un producto en el carrito"""
-        product_id = str(product.id) 
+        product_id = str(product.id)
         product_qty = int(quantity) 
 
         if product_id in self.cart:
