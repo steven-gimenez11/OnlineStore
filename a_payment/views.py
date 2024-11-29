@@ -6,7 +6,6 @@ from a_ecart.cart import Cart
 from django.contrib import messages
 
 @login_required
-@login_required
 def payment_page(request):
     cart = Cart(request)
 
@@ -23,7 +22,8 @@ def payment_page(request):
             user_payment = UserPayment(
                 user=request.user,
                 stripe_customer="fake_customer_id", 
-                stripe_checkout_id="fake_checkout_id",  
+                stripe_checkout_id="fake_checkout_id", 
+                stripe_product_id = "fake_product_id", 
                 product_name="Demo Product", 
                 price=total,  
                 currency="USD",

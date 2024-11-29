@@ -31,17 +31,17 @@
                     </a>
                 </li>
                 {% if request.user.is_authenticated %}
-                <li class="relative group">
-                    <a class="flex items-center gap-2 hover:text-gray-300 transition cursor-pointer">
-                        <img class="h-9 w-9 rounded-full object-cover" src="{{ request.user.profile.avatar }}" alt="Avatar" />
-                        <span>{{ request.user.profile.name }}</span>
-                    </a>
-                    <ul class="absolute hidden group-hover:block bg-gray-700 text-sm mt-2 rounded shadow-md">
-                        <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile' %}">Mi Perfil</a></li>
-                        <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile-edit' %}">Editar Perfil</a></li>
-                        <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile-settings' %}">Configuración</a></li>
-                        <li><a class="block px-4 py-2 hover:bg-red-600 text-red-500" href="{% url 'account_logout' %}">Cerrar Sesión</a></li>
-                    </ul>
+<li class="relative">
+    <a id="user-toggle" class="flex items-center gap-2 hover:text-gray-300 transition cursor-pointer">
+        <img class="h-9 w-9 rounded-full object-cover" src="{{ request.user.profile.avatar }}" alt="Avatar" />
+        <span>{{ request.user.profile.name }}</span>
+    </a>
+                <ul id="user-menu" class="absolute hidden bg-gray-700 text-sm mt-2 rounded shadow-md right-0 w-48">
+                    <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile' %}">Mi Perfil</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile-edit' %}">Editar Perfil</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-600" href="{% url 'profile-settings' %}">Configuración</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-red-600 text-red-500" href="{% url 'account_logout' %}">Cerrar Sesión</a></li>
+                </ul>
                 </li>
                 {% else %}
                 <li><a href="{% url 'account_login' %}" class="hover:text-gray-300 transition">Login</a></li>
@@ -61,6 +61,19 @@
     window.addEventListener('click', function(event) {
         var menu = document.getElementById('categories-menu');
         var toggle = document.getElementById('categories-toggle');
+        if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('user-toggle').addEventListener('click', function() {
+        var menu = document.getElementById('user-menu');
+        menu.classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', function(event) {
+        var menu = document.getElementById('user-menu');
+        var toggle = document.getElementById('user-toggle');
         if (!menu.contains(event.target) && !toggle.contains(event.target)) {
             menu.classList.add('hidden');
         }
